@@ -35,8 +35,12 @@ define(
             events: {
                 'click .wizard-action': function (event) {
                     this.applyAction(event.target.dataset.actionTarget);
+                },
+                'click .continue-mass-operation': function (event) {
+                    this.toggleContinueMassOperation(event.currentTarget);
                 }
             },
+            continueMassOperation: false,
 
             /**
              * {@inheritdoc}
@@ -224,7 +228,13 @@ define(
                             url: Routing.generate('pim_enrich_mass_edit_rest_launch'),
                             data: JSON.stringify(this.getFormData())
                         }).then(() => {
-                            router.redirectToRoute(this.config.backRoute);
+                            const nextRoute = this.continueMassOperation ?
+                                'pim_enrich_mass_edit_action' :
+                                this.config.backRoute;
+                            const routeParams = {actionName: 'product-edit'};
+                            this.data;
+
+                            router.redirectToRoute(nextRoute);
 
                             messenger.notify(
                                 'success',
@@ -246,6 +256,17 @@ define(
                         });
 
                         break;
+                }
+            },
+
+            toggleContinueMassOperation: function (currentTarget) {
+                const $checkBox = $(currentTarget);
+                if ($checkBox.hasClass('AknSelectButton--selected')) {
+                    $checkBox.removeClass('AknSelectButton--selected');
+                    this.continueMassOperation = false;
+                } else {
+                    $checkBox.addClass('AknSelectButton--selected');
+                    this.continueMassOperation = true;
                 }
             },
 
