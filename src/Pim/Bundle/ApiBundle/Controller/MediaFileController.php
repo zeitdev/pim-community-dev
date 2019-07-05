@@ -149,7 +149,10 @@ class MediaFileController
         $this->validator = $validator;
         $this->fileInfoSaver = $fileInfoSaver;
         $this->fileStorer = $fileStorer;
+
+        // @todo pull-up master : Remove this dependency because it's not used anymore.
         $this->remover = $remover;
+
         $this->router = $router;
         $this->apiConfiguration = $apiConfiguration;
         $this->productModelRepository = $productModelRepository;
@@ -373,15 +376,11 @@ class MediaFileController
         try {
             $this->productUpdater->update($product, $productValues);
         } catch (PropertyException $e) {
-            $this->remover->remove($fileInfo);
-
             throw new UnprocessableEntityHttpException($e->getMessage(), $e);
         }
 
         $violations = $this->validator->validate($product);
         if ($violations->count() > 0) {
-            $this->remover->remove($fileInfo);
-
             throw new ViolationHttpException($violations);
         }
 
@@ -417,15 +416,11 @@ class MediaFileController
         try {
             $this->productModelUpdater->update($productModel, $productModelValues);
         } catch (PropertyException $e) {
-            $this->remover->remove($fileInfo);
-
             throw new UnprocessableEntityHttpException($e->getMessage(), $e);
         }
 
         $violations = $this->validator->validate($productModel);
         if ($violations->count() > 0) {
-            $this->remover->remove($fileInfo);
-
             throw new ViolationHttpException($violations);
         }
 

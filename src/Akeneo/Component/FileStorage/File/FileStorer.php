@@ -5,6 +5,7 @@ namespace Akeneo\Component\FileStorage\File;
 use Akeneo\Component\FileStorage\Exception\FileRemovalException;
 use Akeneo\Component\FileStorage\Exception\FileTransferException;
 use Akeneo\Component\FileStorage\FileInfoFactoryInterface;
+use Akeneo\Component\FileStorage\Repository\FileInfoRepositoryInterface;
 use Akeneo\Component\StorageUtils\Saver\SaverInterface;
 use League\Flysystem\FileExistsException;
 use League\Flysystem\MountManager;
@@ -31,19 +32,19 @@ class FileStorer implements FileStorerInterface
     /** @var FileInfoFactoryInterface */
     protected $factory;
 
-    /**
-     * @param MountManager             $mountManager
-     * @param SaverInterface           $saver
-     * @param FileInfoFactoryInterface $factory
-     */
+    /** @var FileInfoRepositoryInterface */
+    private $fileInfoRepository;
+
     public function __construct(
         MountManager $mountManager,
         SaverInterface $saver,
-        FileInfoFactoryInterface $factory
+        FileInfoFactoryInterface $factory,
+        FileInfoRepositoryInterface $fileInfoRepository = null
     ) {
         $this->mountManager = $mountManager;
         $this->saver = $saver;
         $this->factory = $factory;
+        $this->fileInfoRepository = $fileInfoRepository;
     }
 
     /**
@@ -53,6 +54,16 @@ class FileStorer implements FileStorerInterface
     {
         $filesystem = $this->mountManager->getFilesystem($destFsAlias);
         $file = $this->factory->createFromRawFile($localFile, $destFsAlias);
+
+        // todo: sanity checks
+        $storedFile = $this->fileInfoRepository->findOneBy([
+            'hash' => $file->getHash(),
+            'originalFilename' => $file->getOriginalFilename()
+        ]);
+
+        if (null !== $storedFile) {
+            return $storedFile;
+        }
 
         $error = sprintf(
             'Unable to move the file "%s" to the "%s" filesystem.',
