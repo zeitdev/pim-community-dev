@@ -69,7 +69,8 @@ define([
                     FormRegistry.getFormMeta(this.config.tab),
                     FormRegistry.getFormMeta(this.config.item)
                 ).then(function (metaTab, metaItem) {
-                    var breadcrumbTab = { code: this.config.tab, label: __(metaTab.config.title) };
+                    var tab = Object.assign({ config: {}}, metaTab || {})
+                    var breadcrumbTab = { code: this.config.tab, label: __(tab.title) };
                     var breadcrumbItem = null;
                     if (undefined !== metaItem) {
                         breadcrumbItem = { code: this.config.item, label: __(metaItem.config.title), active: true };
