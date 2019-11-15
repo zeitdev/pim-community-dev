@@ -218,11 +218,6 @@ const webpackConfig = {
   },
 
   plugins: [
-    new WebpackShellPlugin({
-      onBuildStart: ['yarn run less', 'yarn update-extensions'],
-      dev: false
-    }),
-
     new ExtraWatchWebpackPlugin({
       files: ['src/**/*{form_extensions/**/*.yml,form_extensions.yml}'],
     }),
