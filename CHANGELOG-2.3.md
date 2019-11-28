@@ -3,6 +3,7 @@
 ## Bug fixes
 
 - PIM-8987: Add --batch-size option to pim:versioning:purge command and add a workaround for the memory leak inside.
+- PIM-9001: Fix memory leak executing "akeneo:batch:purge-job-execution" command
 
 # 2.3.71 (2019-11-25)
 
