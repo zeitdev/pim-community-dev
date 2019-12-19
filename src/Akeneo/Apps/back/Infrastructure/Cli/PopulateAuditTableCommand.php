@@ -47,9 +47,11 @@ class PopulateAuditTableCommand extends Command
         $dates = ['2019-12-08', '2019-12-09', '2019-12-10', '2019-12-11', '2019-12-12', '2019-12-13', '2019-12-14', '2019-12-15', '2019-12-16', '2019-12-17', '2019-12-18'];
         $apps = $this->fetchAppsHandler->query();
 
-        foreach ($apps as $app) {
-            foreach ($dates as $date) {
-                foreach (['product_created', 'product_updated'] as $eventType) {
+        foreach ($dates as $date) {
+            foreach (['product_created', 'product_updated'] as $eventType) {
+                $this->insertAuditData('<all>', $date, rand(5000, 20000), $eventType);
+
+                foreach ($apps as $app) {
                     $this->insertAuditData($app->code(), $date, rand(1, 10000), $eventType);
                 }
             }

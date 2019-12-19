@@ -16,7 +16,6 @@ use Doctrine\DBAL\Connection;
  */
 class DbalSelectAppsEventCountByDayQuery implements SelectAppsEventCountByDayQuery
 {
-
     /** @var Connection */
     private $dbalConnection;
 
