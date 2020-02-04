@@ -101,6 +101,7 @@ contexts: &context
             - '@pim_catalog.repository.product_model'
     -   Akeneo\Connectivity\Connection\Tests\EndToEnd\Context\SettingsContext:
             - 'Context\FeatureContext'
+            - '@akeneo_connectivity.connection.application.handler.create_connection'
 
 legacy:
     suites:

@@ -59,10 +59,10 @@ export const RegenerateConnectionSecret = () => {
             onCancel={handleRedirect}
         >
             <div className='AknButtonList'>
-                <GreyButton onClick={handleRedirect} classNames={['AknButtonList-item']}>
+                <GreyButton data-testid='cancel-regenerate' onClick={handleRedirect} classNames={['AknButtonList-item']}>
                     <Translate id='pim_common.cancel' />
                 </GreyButton>
-                <ImportantButton onClick={handleClick} classNames={['AknButtonList-item']}>
+                <ImportantButton data-testid='confirm-regenerate' onClick={handleClick} classNames={['AknButtonList-item']}>
                     <Translate id='akeneo_connectivity.connection.regenerate_secret.action.regenerate' />
                 </ImportantButton>
             </div>

@@ -23,7 +23,7 @@ export const Modal = ({subTitle, title, description, children, onCancel}: PropsW
                         <div className='AknFullPage-image AknFullPage-illustration AknFullPage-illustration--api' />
                     </div>
 
-                    <div>
+                    <div data-testid={`${title}-modal`}>
                         <div className='AknFullPage-titleContainer'>
                             <div className='AknFullPage-subTitle'>{subTitle}</div>
                             <div className='AknFullPage-title'>{title}</div>

@@ -20,7 +20,7 @@ export const Credential = ({
 }) => (
     <>
         <Label withHelper={!!helper}>{label}</Label>
-        <Value withHelper={!!helper}>{value}</Value>
+        <Value data-testid={`${label}-value`} withHelper={!!helper}>{value}</Value>
         <Actions withHelper={!!helper}>{actions}</Actions>
         {helper && <Helper>{helper}</Helper>}
     </>

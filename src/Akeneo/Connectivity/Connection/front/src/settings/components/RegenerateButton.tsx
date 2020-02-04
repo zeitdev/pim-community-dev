@@ -5,13 +5,15 @@ import {TranslateContext} from '../../shared/translate';
 
 interface Props {
     onClick: () => void;
+    id?: string;
 }
 
-export const RegenerateButton: FC<Props> = ({onClick}: Props) => {
+export const RegenerateButton: FC<Props> = ({onClick, id = undefined}: Props) => {
     const translate = useContext(TranslateContext);
 
     return (
         <IconButton
+            data-testid={id}
             onClick={onClick}
             title={translate('akeneo_connectivity.connection.edit_connection.credentials.action.regenerate')}
         >

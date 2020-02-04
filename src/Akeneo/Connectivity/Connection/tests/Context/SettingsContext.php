@@ -3,8 +3,12 @@ declare(strict_types=1);
 
 namespace Akeneo\Connectivity\Connection\Tests\EndToEnd\Context;
 
+use Akeneo\Connectivity\Connection\Application\Settings\Command\CreateConnectionCommand;
+use Akeneo\Connectivity\Connection\Application\Settings\Command\CreateConnectionHandler;
+use Akeneo\Connectivity\Connection\Domain\Settings\Model\Read\ConnectionWithCredentials;
 use Behat\Gherkin\Node\TableNode;
 use Context\Spin\SpinCapableTrait;
+use PHPUnit\Framework\Assert;
 use Pim\Behat\Context\PimContext;
 
 /**
@@ -15,6 +19,74 @@ use Pim\Behat\Context\PimContext;
 class SettingsContext extends PimContext
 {
     use SpinCapableTrait;
+
+    /** @var CreateConnectionHandler */
+    private $createConnection;
+
+    /** @var ConnectionWithCredentials */
+    private $lastConnectionCredentials;
+
+    public function __construct(string $mainContextClass, CreateConnectionHandler $createConnection)
+    {
+        parent::__construct($mainContextClass);
+        $this->createConnection = $createConnection;
+    }
+
+    /**
+     * @param string $flowType
+     * @param string $label
+     *
+     * @Given the :flowType Connection :label has been created
+     */
+    public function theConnectionHasBeenCreated(string $flowType, string $label): void
+    {
+        $map = [
+            'data source' => 'data_source',
+            'source' => 'data_source',
+            'data destination' => 'data_destination',
+            'destination' => 'data_destination',
+            'data other' => 'other',
+            'other' => 'other',
+        ];
+        if (!isset($map[$flowType])) {
+            throw new \UnexpectedValueException('The flow type you want to choose does not exist.');
+        }
+
+        $code = str_replace(' ', '_', $label);
+        $command = new CreateConnectionCommand($code, $label, $map[$flowType]);
+        $this->lastConnectionCredentials = $this->createConnection->handle($command);
+    }
+
+    /**
+     * @param string $connection
+     *
+     * @When I regenerate the secret of the ":connection" connection
+     */
+    public function regenerateSecretOfAConnection(string $connection)
+    {
+        $navigationContext = $this->getNavigationContext();
+        $code = str_replace(' ', '_', $connection);
+        $navigationContext->iAmOnThePage('Connections edit', ['code' => $code]);
+        $this->getMainContext()->getSubcontext('webUser')->scrollContainerTo();
+
+        $this->getCurrentPage()->getElement('Credentials form')->regenerateSecret();
+
+//        $navigationContext->iShouldBeRedirectedOnThePage('Connection regenerateSecret', ['code' => $code]);
+//        $navigationContext->iAmOnThePage('Connection regenerateSecret', ['code' => $code]);
+//        $this->getCurrentPage()->getElement('Confirm modal')->confirm();
+    }
+
+    /**
+     * @Then the secret should have changed
+     */
+    public function theSecretShouldHaveChanged()
+    {
+        $this
+            ->getNavigationContext()
+            ->iAmOnThePage('Connections edit', ['code' => $this->lastConnectionCredentials->code()]);
+        $currentSecret = $this->getCurrentPage()->getElement('Credentials form')->getSecret();
+        Assert::assertNotSame($this->lastConnectionCredentials->secret(), $currentSecret);
+    }
 
     /**
      * @param TableNode $creationData

@@ -120,10 +120,10 @@ export const EditConnection = () => {
 
                 <PageContent>
                     <Layout>
-                        <div>
+                        <div data-testid='settings-form'>
                             <ConnectionEditForm connection={connection} />
                         </div>
-                        <div>
+                        <div data-testid='credentials-form'>
                             <ConnectionCredentials
                                 code={connection.code}
                                 label={connection.label}
