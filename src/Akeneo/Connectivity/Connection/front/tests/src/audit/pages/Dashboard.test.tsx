@@ -4,7 +4,6 @@ import '@testing-library/jest-dom/extend-expect';
 import {act} from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import React from 'react';
-import {UserContext} from '@src/shared/user/user-context';
 import {renderWithProviders} from '../../../test-utils';
 
 describe('testing Dashboard page', () => {
@@ -51,25 +50,10 @@ describe('testing Dashboard page', () => {
             Promise.resolve(new Response(JSON.stringify(api(input as string))))
         );
 
-        const userContext = {
-            get: (key: string) => {
-                if ('uiLocale' === key) {
-                    return 'en_US';
-                }
-                if ('timezone' === key) {
-                    return 'UTC';
-                }
-
-                return key;
-            },
-            set: () => undefined,
-        };
         const {findAllByText, queryByText, getByText} = renderWithProviders(
-            <UserContext.Provider value={userContext}>
-                <DashboardProvider>
-                    <Dashboard />
-                </DashboardProvider>
-            </UserContext.Provider>
+            <DashboardProvider>
+                <Dashboard />
+            </DashboardProvider>
         );
 
         const selectors = await findAllByText('akeneo_connectivity.connection.dashboard.connection_selector.all');
