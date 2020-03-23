@@ -1,5 +1,28 @@
 # 4.0.x
 
+## Bug fixes
+
+- API-1010: Change collect of Audit Data Source events to support Timezone.
+- PIM-9134: Remove error notif when a user saves a product and they have no view rights on the attribute used as label 
+
+## Technical Improvements
+
+- API-1010: Improve scalability on Audit connection feature.
+
+# 4.0.10 (2020-03-18)
+
+# 4.0.9 (2020-03-16)
+
+# 4.0.8 (2020-03-05)
+
+- PIM-9129: Fix missing brightness measure translations
+
+# 4.0.7 (2020-03-04)
+
+## Technical Improvements
+
+- #11583: Remove useless GLOB_BRACE flag from standard Kernel
+
 # 4.0.6 (2020-02-19)
 
 # 4.0.5 (2020-02-14)

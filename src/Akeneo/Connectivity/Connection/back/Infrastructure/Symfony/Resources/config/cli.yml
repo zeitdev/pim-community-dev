@@ -3,7 +3,8 @@ services:
         class: Akeneo\Connectivity\Connection\Infrastructure\Cli\UpdateAuditDataCommand
         arguments:
             - '@akeneo_connectivity.connection.application.audit.handler.update_product_event_count'
-            - '@akeneo_connectivity_connection.persistence.query.select_event_dates_to_refresh'
+            - '@akeneo_connectivity_connection.persistence.query.select_hourly_intervals_to_refresh'
+            - '@akeneo_connectivity_connection.persistence.query.purge_audit_product'
         tags:
             - { name: 'console.command' }
 
@@ -11,12 +12,5 @@ services:
         class: Akeneo\Connectivity\Connection\Infrastructure\Cli\CreateConnectionCommand
         arguments:
             - '@akeneo_connectivity.connection.application.handler.create_connection'
-        tags:
-            - { name: 'console.command' }
-
-    Akeneo\Connectivity\Connection\Infrastructure\Cli\PurgeReadProductTableCommand:
-        class: Akeneo\Connectivity\Connection\Infrastructure\Cli\PurgeReadProductTableCommand
-        arguments:
-            - '@akeneo_connectivity_connection.persistence.query.purge_read_product'
         tags:
             - { name: 'console.command' }
