@@ -21,23 +21,47 @@ import {connectionsFetched} from '../actions/connections-actions';
 import {ConnectionGrid} from '../components/ConnectionGrid';
 import {NoConnection} from '../components/NoConnection';
 import {useConnectionsDispatch, useConnectionsState} from '../connections-context';
+import {wrongCredentialsCombinationsFetched} from '../actions/wrong-credentials-combinations-actions';
+import {WrongCredentialsCombinations} from '../../model/wrong-credentials-combinations';
+import {
+    useWrongCredentialsCombinationsDispatch,
+    useWrongCredentialsCombinationsState,
+} from '../wrong-credentials-combinations-context';
 
 const MAXIMUM_NUMBER_OF_ALLOWED_CONNECTIONS = 50;
 
-type ResultValue = Array<Connection>;
+type ResultConnections = Array<Connection>;
 
 export const ListConnections = () => {
     const history = useHistory();
 
     const connections = useConnectionsState();
-    const dispatch = useConnectionsDispatch();
+    const dispatchConnection = useConnectionsDispatch();
 
-    const route = useRoute('akeneo_connectivity_connection_rest_list');
+    const wrongCredentialsCombinations = useWrongCredentialsCombinationsState();
+    const dispatchCombinations = useWrongCredentialsCombinationsDispatch();
+
+    const listConnectionRoute = useRoute('akeneo_connectivity_connection_rest_list');
     useEffect(() => {
-        fetchResult<ResultValue, never>(route).then(
-            result => isOk(result) && dispatch(connectionsFetched(result.value))
+        let cancelled = false;
+        fetchResult<ResultConnections, never>(listConnectionRoute).then(
+            result => isOk(result) && !cancelled && dispatchConnection(connectionsFetched(result.value))
         );
-    }, [route, dispatch]);
+        return () => {
+            cancelled = true;
+        };
+    }, [listConnectionRoute, dispatchConnection]);
+
+    const listWrongCombinationRoute = useRoute(
+        'akeneo_connectivity_connection_rest_wrong_credentials_combination_list'
+    );
+    useEffect(() => {
+        fetchResult<WrongCredentialsCombinations, never>(listWrongCombinationRoute).then(result => {
+            if (isOk(result)) {
+                dispatchCombinations(wrongCredentialsCombinationsFetched(result.value));
+            }
+        });
+    }, [listWrongCombinationRoute, dispatchCombinations]);
 
     const handleCreate = () => history.push('/connections/create');
 
@@ -101,37 +125,46 @@ export const ListConnections = () => {
                 ) : (
                     <>
                         {sourceConnections && sourceConnections.length > 0 && (
-                            <ConnectionGrid
-                                connections={sourceConnections}
-                                title={
-                                    <Translate
-                                        id='akeneo_connectivity.connection.flow_type.data_source'
-                                        count={sourceConnections.length}
-                                    />
-                                }
-                            />
+                            <div data-testid='data_source'>
+                                <ConnectionGrid
+                                    connections={sourceConnections}
+                                    wrongCredentialsCombinations={wrongCredentialsCombinations}
+                                    title={
+                                        <Translate
+                                            id='akeneo_connectivity.connection.flow_type.data_source'
+                                            count={sourceConnections.length}
+                                        />
+                                    }
+                                />
+                            </div>
                         )}
                         {destinationConnections && destinationConnections.length > 0 && (
-                            <ConnectionGrid
-                                connections={destinationConnections}
-                                title={
-                                    <Translate
-                                        id='akeneo_connectivity.connection.flow_type.data_destination'
-                                        count={destinationConnections.length}
-                                    />
-                                }
-                            />
+                            <div data-testid='data_destination'>
+                                <ConnectionGrid
+                                    connections={destinationConnections}
+                                    wrongCredentialsCombinations={wrongCredentialsCombinations}
+                                    title={
+                                        <Translate
+                                            id='akeneo_connectivity.connection.flow_type.data_destination'
+                                            count={destinationConnections.length}
+                                        />
+                                    }
+                                />
+                            </div>
                         )}
                         {otherConnections && otherConnections.length > 0 && (
-                            <ConnectionGrid
-                                connections={otherConnections}
-                                title={
-                                    <Translate
-                                        id='akeneo_connectivity.connection.flow_type.other'
-                                        count={otherConnections.length}
-                                    />
-                                }
-                            />
+                            <div data-testid='data_other'>
+                                <ConnectionGrid
+                                    connections={otherConnections}
+                                    wrongCredentialsCombinations={wrongCredentialsCombinations}
+                                    title={
+                                        <Translate
+                                            id='akeneo_connectivity.connection.flow_type.other'
+                                            count={otherConnections.length}
+                                        />
+                                    }
+                                />
+                            </div>
                         )}
                     </>
                 )}

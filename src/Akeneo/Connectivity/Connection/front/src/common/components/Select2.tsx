@@ -6,6 +6,7 @@ export type Select2Configuration = {
     data: Array<{id: string; text: string}>;
     allowClear?: boolean;
     dropdownCssClass?: string;
+    containerCssClass?: string;
     formatResult?: (item: {id: string}) => string;
 };
 
@@ -27,9 +28,12 @@ export const Select2 = ({configuration, value, onChange}: Props) => {
         $select.select2(configuration);
         $select.on('change', ({val}: {val: string}) => onChange(val || undefined));
 
+        const $container = $select.select2('container');
+
         return () => {
             $select.off('change');
             $select.select2('destroy');
+            $container.remove();
         };
     }, [ref, configuration, value, onChange]);
 

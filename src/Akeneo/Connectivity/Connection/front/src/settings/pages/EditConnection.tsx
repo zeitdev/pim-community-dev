@@ -16,7 +16,7 @@ import {PimView} from '../../infrastructure/pim-view/PimView';
 import {Connection} from '../../model/connection';
 import {FlowType} from '../../model/flow-type.enum';
 import {isErr, isOk} from '../../shared/fetch-result/result';
-import {BreadcrumbRouterLink} from '../../shared/router';
+import {BreadcrumbRouterLink, useRoute} from '../../shared/router';
 import {Translate} from '../../shared/translate';
 import {connectionFetched, connectionUpdated} from '../actions/connections-actions';
 import {useFetchConnection} from '../api-hooks/use-fetch-connection';
@@ -26,6 +26,13 @@ import {ConnectionEditForm} from '../components/ConnectionEditForm';
 import {ConnectionPermissionsForm} from '../components/permissions/ConnectionPermissionsForm';
 import {useConnectionsDispatch, useConnectionsState} from '../connections-context';
 import {useMediaUrlGenerator} from '../use-media-url-generator';
+import {
+    useWrongCredentialsCombinationsDispatch,
+    useWrongCredentialsCombinationsState,
+} from '../wrong-credentials-combinations-context';
+import {fetchResult} from '../../shared/fetch-result';
+import {WrongCredentialsCombinations} from '../../model/wrong-credentials-combinations';
+import {wrongCredentialsCombinationsFetched} from '../actions/wrong-credentials-combinations-actions';
 
 export type FormValues = {
     label: string;
@@ -45,8 +52,7 @@ const validate = ({label}: FormValues): FormErrors => {
     const errors: FormErrors = {};
     if (!label || label.trim().length === 0) {
         errors.label = 'akeneo_connectivity.connection.connection.constraint.label.required';
-    }
-    if (label.trim().length < 3) {
+    } else if (label.trim().length < 3) {
         errors.label = 'akeneo_connectivity.connection.connection.constraint.label.too_short';
     }
     return errors;
@@ -57,19 +63,35 @@ export const EditConnection = () => {
     const connections = useConnectionsState();
     const dispatch = useConnectionsDispatch();
 
+    const wrongCredentialsCombinations = useWrongCredentialsCombinationsState();
+    const dispatchCombinations = useWrongCredentialsCombinationsDispatch();
+
+    const route = useRoute('akeneo_connectivity_connection_rest_wrong_credentials_combination_list');
+    useEffect(() => {
+        fetchResult<WrongCredentialsCombinations, never>(route).then(result => {
+            if (isOk(result)) {
+                dispatchCombinations(wrongCredentialsCombinationsFetched(result.value));
+            }
+        });
+    }, [route, dispatchCombinations]);
+
     const {code} = useParams<{code: string}>();
     const connection = connections[code];
 
     const fetchConnection = useFetchConnection(code);
     useEffect(() => {
+        let cancelled = false;
         fetchConnection().then(result => {
             if (isErr(result)) {
                 history.push('/connections');
                 return;
             }
 
-            dispatch(connectionFetched(result.value));
+            !cancelled && dispatch(connectionFetched(result.value));
         });
+        return () => {
+            cancelled = true;
+        };
     }, [fetchConnection, dispatch, history]);
 
     const updateConnection = useUpdateConnection(code);
@@ -128,6 +150,7 @@ export const EditConnection = () => {
                                 code={connection.code}
                                 label={connection.label}
                                 credentials={connection}
+                                wrongCombination={wrongCredentialsCombinations[connection.code]}
                             />
                             <br />
                             <ConnectionPermissionsForm label={connection.label} />
