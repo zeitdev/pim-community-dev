@@ -17,9 +17,9 @@ akeneo_feature_flag:
     - ...
 ```
 
-The most important here is to decouple the decision point (the place where I need to know if a feature is enabled) from the decision logic (how do I know this feature is enabled). 
+The most important here is to decouple the decision point (the place where I need to know if a feature is enabled) from the decision logic (how do I know if this feature is enabled). 
 
-Your feature flag must respect the following contract:
+Your feature flag service must respect the following contract:
 
 ```php
 interface FeatureFlag
@@ -27,6 +27,8 @@ interface FeatureFlag
     public function isEnabled(): bool
 }    
 ```
+
+Your service must be tagged with `akeneo_feature_flag`.
 
 ### Examples
 
@@ -38,6 +40,7 @@ services:
         class: 'Akeneo\FeatureFlagBundle\Configuration\EnvVarFeatureFlag'
         arguments:
             - '%env(FLAG_ONBOARDER_ENABLED)%'
+        tags: ['akeneo_feature_flag']
 ```
 
 Behind the scenes, the very simple `EnvVarFeatureFlag` is called:
@@ -69,6 +72,7 @@ services:
         class: 'Akeneo\My\Own\Path\FooFeatureFlag'
         arguments:
             - '@request_stack'
+        tags: ['akeneo_feature_flag']
 ``` 
 
 ```php
@@ -99,9 +103,14 @@ class FooFeatureFlag implements FeatureFlag
 
 ## Using feature flag in your code
 
+```php
+    $flags = $container->get('feature_flags_registry');
+    if ($flags->isEnabled('myFeature')) { //...
+```
+
 ### Short living feature flags
 
-inject your feature flag service declared previously
+inject the feature flag service registry in your code
 
 simple if/else is OK
 
