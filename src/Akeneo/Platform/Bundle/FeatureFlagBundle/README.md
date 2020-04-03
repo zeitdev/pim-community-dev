@@ -19,6 +19,17 @@ akeneo_feature_flag:
 
 The most important here is to decouple the decision point (the place where I need to know if a feature is enabled) from the decision logic (how do I know this feature is enabled). 
 
+Your feature flag must respect the following contract:
+
+```php
+interface FeatureFlag
+{
+    public function isEnabled(): bool
+}    
+```
+
+### Examples
+
 Let's take a very simple example. Let's say we want to (de)activate the Onboarder feature via an environment variable. All we have to do is to declare the following service:
 
 ```yaml
@@ -80,6 +91,11 @@ class FooFeatureFlag implements FeatureFlag
 }
 
 ```
+
+### Provided feature flag classes
+
+- EnvVarFeatureFlag
+- ...
 
 ## Using feature flag in your code
 
