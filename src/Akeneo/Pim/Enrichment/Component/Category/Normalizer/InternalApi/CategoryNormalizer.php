@@ -34,6 +34,7 @@ class CategoryNormalizer implements NormalizerInterface
         $standardCategory = $this->categoryNormalizer->normalize($category, 'standard', $context);
 
         $standardCategory['id'] = $category->getId();
+        $standardCategory['code'] = $category->getCode();
 
         return $standardCategory;
     }
