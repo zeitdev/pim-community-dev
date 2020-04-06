@@ -1,7 +1,7 @@
 # FeatureFlagBundle
 
 Simple, stupid and yet flexible Feature Flags system for the Symfony world. Please, take 30 minutes to read the tremendous article [Feature Toggles (aka Feature Flags)
-](https://www.martinfowler.com/articles/feature-toggles.html). Feature flags are not an easy topic. They present great power but come with many burdens.  
+](https://www.martinfowler.com/articles/feature-toggles.html). Feature flags are not an easy and small topic. They present great powers but come with many burdens.  
 
 TODO: evaluate and describe existing bundles
 
@@ -148,12 +148,11 @@ For those use cases, we'll go simple. Simply inject the feature flags service (b
 
 **Flags that will live more than a few weeks.**
 
-The 
+The standard use case for that are premium features, like the _Onboarder_. They will always be present in the code, but won't be enabled for everyone or everytime.
 
-avoid crippling code with if/else
+Those flags require extra attention. We must avoid crippling business code with `if/else` branching. Instead, use [inversion of control](https://en.wikipedia.org/wiki/Inversion_of_control) and [Symfony's service factories](https://symfony.com/doc/current/service_container/factories.html) or the [strategy pattern](https://en.wikipedia.org/wiki/Strategy_pattern).
 
-use inversion of control and service factories or strategy pattern instead
-
+TODO: in this example, we used...
 
 ## Part about what we can do when flagging?
 
