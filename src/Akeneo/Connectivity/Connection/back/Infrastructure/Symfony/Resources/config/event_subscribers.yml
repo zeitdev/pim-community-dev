@@ -7,3 +7,10 @@ services:
       - '@akeneo_connectivity.connection.application.audit.handler.update_data_destination_product_event_count'
     tags:
       - { name: kernel.event_subscriber }
+
+  akeneo_connectivity.connection.event_subscriber.collect_api_errors:
+    class: Akeneo\Connectivity\Connection\Infrastructure\EventSubscriber\CollectApiErrorsEventSubscriber
+    arguments:
+      - '@security.token_storage'
+    tags:
+      - { name: kernel.event_subscriber }
