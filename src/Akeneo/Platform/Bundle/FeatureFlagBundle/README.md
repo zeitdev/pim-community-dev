@@ -109,14 +109,33 @@ To ease developments, the _FeatureFlagBundle_ comes with a few ready to use impl
 - `Akeneo\Platform\Bundle\FeatureFlagBundle\EnvVarFeatureFlag`: know if a feature is activated by checking an environment variable.  
 - ...
 
-## Using feature flag in your code
+### About the frontend
+
+Flags are of course also available for frontend. Behind the scenes, a backend route (TODO: ROUTE HERE) is called. It returns a JSON response answering if the feature is enabled or not. See the part _Knowing if a feature is enabled_ for more information.
+
+
+## Using feature flags in your code
+
+### Knowing if a feature is enabled
+
+#### Backend
+
+A service called `akeneo_feature_flags` exists to determine if the feature you have configured in `config/packages/akeneo_feature_flag.yml` is enabled or not. This is the one and only backend entry point you have to use.
 
 ```php
-    $flags = $container->get('feature_flags_registry');
+    $flags = $container->get('akeneo_feature_flags');
     if ($flags->isEnabled('myFeature')) { //...
 ```
 
+#### Frontend
+
+TODO with Paul: the idea is to have a simple service `AkeneoFeatureFlags`. Maybe it will be embedded in a fetcher to act as some sort of cache.
+
 ### Short living feature flags
+
+_Flags that will live from a few days to a few weeks._
+
+This happens typically when you develop a small feature bits by bits. At present, the feature is not ready to be presented to the end user, but with a few more pull requests and tests, this will be the case. 
 
 inject the feature flag service registry in your code
 
@@ -124,6 +143,17 @@ simple if/else is OK
 
 ### Long living feature flags
 
+_Flags that will live more than a few weeks._
+
+The 
+
 avoid crippling code with if/else
 
 use inversion of control and service factories or strategy pattern instead
+
+
+## Part about what we can do when flagging?
+
+TODO: for instance:
+- 403 forbidden routes
+- ...
