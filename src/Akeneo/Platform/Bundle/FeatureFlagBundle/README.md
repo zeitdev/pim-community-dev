@@ -34,7 +34,7 @@ Your feature flag service must be tagged with `akeneo_feature_flag`.
 
 ### Examples
 
-Let's take a very simple example. Let's say we want to (de)activate the Onboarder feature via an environment variable. All we have to do is to declare the following service:
+Let's take a very simple example: we say we want to (de)activate the _Onboarder_ feature via an environment variable. All we have to do is to declare the following service:
 
 ```yaml
 services:
@@ -45,7 +45,7 @@ services:
         tags: ['akeneo_feature_flag']
 ```
 
-Behind the scenes, the very simple `EnvVarFeatureFlag` is called:
+Behind the scenes, the very simple `EnvVarFeatureFlag` class is called:
 
 ```php
 namespace Akeneo\Platform\Bundle\FeatureFlagBundle;
@@ -68,7 +68,7 @@ class EnvVarFeatureFlag implements FeatureFlag
 }
 ``` 
 
-Another example. Imagine now you want to allow Akeneo people working at Nantes to access a beta `foo` feature. All you have to do is declare in your code a service that implements `TODO\FeatureFlag`.
+Another example. Imagine now you want to allow Akeneo people working at Nantes to access a beta `foo` feature. All you have to do is declare in your code a service that implements `Akeneo\Platform\Bundle\FeatureFlagBundle\FeatureFlag`.
 
 ```yaml
 services:
@@ -104,7 +104,9 @@ class FooFeatureFlag implements FeatureFlag
 
 ### Provided feature flag classes
 
-- EnvVarFeatureFlag
+To ease developments, the _FeatureFlagBundle_ comes with a few ready to use implementations. When you want to use those classes, all you have to do is to declare a service.  
+
+- `Akeneo\Platform\Bundle\FeatureFlagBundle\EnvVarFeatureFlag`: know if a feature is activated by checking an environment variable.  
 - ...
 
 ## Using feature flag in your code
