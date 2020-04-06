@@ -138,7 +138,11 @@ TODO with Paul: the idea is to have a simple service `AkeneoFeatureFlags`. Maybe
 
 This happens typically when you develop a small feature bits by bits. At present, the feature is not ready to be presented to the end user, but with a few more pull requests and tests, this will be the case. 
 
-For those use cases, we'll go simple. Simply inject the feature flags service (backend or frontend) in your code and branch with a simple if/else. **This way of working works only and only if you clean all those hideous conditional when your feature is ready to use.** Otherwise, the code will quickly become hell of a maze with all flags setup by all different teams. **Also, please take extract care on the impact your flag could have on other teams' flags.** If it becomes tedious, please adopt the same strategy than for long living flags instead.
+For those use cases, we'll go simple. Simply inject the feature flags service (backend or frontend) in your code and branch with a simple `if/else`. 
+
+**This way of working works only and only if you clean all those hideous conditional when your feature is ready to use.** Otherwise, the code will quickly become hell of a maze with all flags setup by all different teams. 
+
+**Also, please take extract care on the impact your flag could have on other teams' flags.** If it becomes tedious, please adopt the same strategy than for long living flags instead.
 
 ### Long living feature flags
 
