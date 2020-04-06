@@ -22,6 +22,8 @@ The most important here is to decouple the decision point (the place where I nee
 Your feature flag service must respect the following contract:
 
 ```php
+namespace Akeneo\Platform\Bundle\FeatureFlagBundle;
+
 interface FeatureFlag
 {
     public function isEnabled(): bool
@@ -37,7 +39,7 @@ Let's take a very simple example. Let's say we want to (de)activate the Onboarde
 ```yaml
 services:
     service_that_defines_if_onboarder_feature_is_enabled:
-        class: 'Akeneo\FeatureFlagBundle\Configuration\EnvVarFeatureFlag'
+        class: 'Akeneo\Platform\Bundle\FeatureFlagBundle\Configuration\EnvVarFeatureFlag'
         arguments:
             - '%env(FLAG_ONBOARDER_ENABLED)%'
         tags: ['akeneo_feature_flag']
@@ -46,7 +48,9 @@ services:
 Behind the scenes, the very simple `EnvVarFeatureFlag` is called:
 
 ```php
-use TODO\FeatureFlag;
+namespace Akeneo\Platform\Bundle\FeatureFlagBundle;
+
+use Akeneo\Platform\Bundle\FeatureFlagBundle\FeatureFlag;
 
 class EnvVarFeatureFlag implements FeatureFlag
 {
@@ -69,14 +73,16 @@ Another example. Imagine now you want to allow Akeneo people working at Nantes t
 ```yaml
 services:
     service_that_defines_if_foo_feature_is_enabled:
-        class: 'Akeneo\My\Own\Path\FooFeatureFlag'
+        class: 'Akeneo\My\Own\Namespace\FooFeatureFlag'
         arguments:
             - '@request_stack'
         tags: ['akeneo_feature_flag']
 ``` 
 
 ```php
-use TODO\FeatureFlag;
+namespace Akeneo\My\Own\Namespace;
+
+use Akeneo\Platform\Bundle\FeatureFlagBundle\FeatureFlag;
 
 class FooFeatureFlag implements FeatureFlag
 {
