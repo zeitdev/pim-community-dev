@@ -28,7 +28,7 @@ interface FeatureFlag
 }    
 ```
 
-Your service must be tagged with `akeneo_feature_flag`. TODO: maybe this can be done automatically to all classes implementing FeatureFlag
+Your feature flag service must be tagged with `akeneo_feature_flag`.
 
 ### Examples
 
